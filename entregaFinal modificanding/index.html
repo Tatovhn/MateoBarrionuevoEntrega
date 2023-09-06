@@ -86,27 +86,43 @@
    </div><div class="col-3">
    </div>
 </div>
-    <!-- <div class="row" id="search">
-      <div class="">
-      <input class="p-2" type="text" id="searchProducto" style="height: 50px;" placeholder="Buscar..">
-<ul class="sugerencias active" ><li>sugerencia</li></ul>
-   </div>
-   
-      <button class="btn-info p-2" type="submit" style="height: 50px; "onclick="buscar()"></button></div>
-   </div>
-<div class="row">
-<div class="col-3 p-3 mx-auto" >
-   <button class="btn-primary p-2" onclick="inventario()">Ver catálogo</button> 
-   <button class="btn-primary p-2" id="clear">Limpiar</button>
-</div>
-
-<div class="col-3 p-3 mx-auto">
-   <button class="btn-primary p-2" onclick="carritoVer()">Ver carrito</button>
-   <button class="btn-primary p-2" onclick="carritoVaciar()">Vaciar carrito</button>
-</div> --><br>
+    <br>
 
 </div>
+<div class="container d-inline" id="carrusel">
+<section class="mx-auto col-xs-6 col-sm-9 col-md-6 ">
+<div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div id="tarjeta1" class="mx-auto">
+        
+        <!-- aca va una tarjeta -->
 
+        </div>
+     </div> 
+     <div class="carousel-item">
+      <div id="tarjeta2" class="mx-auto">
+        
+        <!-- aca va una tarjeta -->
+
+        </div>
+     </div> 
+     <div class="carousel-item">
+      <div id="tarjeta3" class="mx-auto">
+        
+        <!-- aca va una tarjeta -->
+
+        </div>
+     </div> 
+    
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </button>
+</div></section></div>
 
 <template id="resultados" >
    <div class="card bg-dark d-inline-block border border" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
@@ -119,9 +135,8 @@
         <button><a href="#" class="btn btn-primary" onclick="comprar()">Comprar</a></button>
       </div>
    </div> 
-
+  </div>
 </template>
-<section>
 <div class="container" ><div class="row">
 
 <div id="lista" class="d-inline-row mx-auto col-xl-10 col-lg-12 col-md-10 col-sm-10"></div>

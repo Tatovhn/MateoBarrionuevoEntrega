@@ -53,6 +53,68 @@ const Productos =[
    precio: 344
    }
 ]
+
+// carrusel
+let carrusel = document.getElementById("carrusel");
+let carrusel1 = document.getElementById("tarjeta1");
+let divcar1 = document.createElement("div");
+let divcar1prod= Math.floor(Math.random() * 5) + 1;
+console.log(divcar1prod)
+divcar1.innerHTML = `
+<div class="card bg-dark mx-auto border border-warning" style="width: 18rem;text-align: center;">
+    <img src="images/4811.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title red" id="nombreProd1"> Producto: ${Productos[divcar1prod].nombre}</h5>
+      <h6 class="card-text" id="idProducto" type="number">id: ${Productos[divcar1prod].id}</h6>
+      <h6 class="card-text" id="precio1" type="number" >$ ${Productos[divcar1prod].precio}</h6>
+      <button id="${Productos[divcar1prod].id}" class="btn btn-primary">Agregar</button>
+    </div>
+ </div> 
+`
+carrusel1.append(divcar1);
+let botont1 = document.getElementById(`${Productos[divcar1prod].id}`);
+botont1.addEventListener('click',() => comprar(Productos[divcar1prod].id));
+
+
+let carrusel2 = document.getElementById("tarjeta2");
+let divcar2 = document.createElement("div");
+let divcar2prod= divcar1prod + 1;
+
+divcar2.innerHTML = `
+<div class="card bg-dark mx-auto border border-warning" style="width: 18rem;text-align: center;">
+    <img src="images/4811.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title red" id="nombreProd1"> Producto: ${Productos[divcar2prod].nombre}</h5>
+      <h6 class="card-text" id="idProducto" type="number">id: ${Productos[divcar2prod].id}</h6>
+      <h6 class="card-text" id="precio1" type="number" >$ ${Productos[divcar2prod].precio}</h6>
+      <button id="${Productos[divcar2prod].id}" class="btn btn-primary">Agregar</button>
+    </div>
+ </div> 
+`
+carrusel2.append(divcar2);
+let botont2 = document.getElementById(`${Productos[divcar2prod].id}`);
+botont2.addEventListener('click',() => comprar(Productos[divcar2prod].id));
+
+let carrusel3 = document.getElementById("tarjeta3");
+let divcar3 = document.createElement("div");
+let divcar3prod= divcar2prod + 1;
+
+divcar3.innerHTML = `
+<div class="card bg-dark mx-auto border border-warning" style="width: 18rem;text-align: center;">
+    <img src="images/4811.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title red" id="nombreProd1"> Producto: ${Productos[divcar3prod].nombre}</h5>
+      <h6 class="card-text" id="idProducto" type="number">id: ${Productos[divcar3prod].id}</h6>
+      <h6 class="card-text" id="precio1" type="number" >$ ${Productos[divcar3prod].precio}</h6>
+      <button id="${Productos[divcar3prod].id}" class="btn btn-primary">Agregar</button>
+    </div>
+ </div> 
+`
+carrusel3.append(divcar3);
+let botont3 = document.getElementById(`${Productos[divcar3prod].id}`);
+botont3.addEventListener('click',() => comprar(Productos[divcar3prod].id));3
+
+let dcto = false;
 let carrito=[];
 const ProductosFinal =[];
 Productos.push(new Producto(1,"prueba",200));
@@ -61,7 +123,6 @@ function comprar(id){
   carrito.push(compra);
   console.log(carrito);
 return carrito}
-
 
 // boton ingresar producto nuevo
 function ingresar(){
@@ -88,6 +149,7 @@ let template = document.getElementById('resultados');
 // boton buscar
 function buscar(){ 
   lista.innerHTML="";
+  carrusel.innerHTML="";
   let buscado = Productos.find(producto => producto.nombre === document.getElementById('searchProducto').value);
   console.log(buscado);
   let clone = template.content.cloneNode(true);
@@ -102,10 +164,11 @@ function buscar(){
 // mostrar todos los productos
 function inventario(){
   lista.innerHTML="";
+  carrusel.innerHTML="";
   Productos.forEach((item)=>{
   let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
   div.innerHTML= `
-  <div class="card bg-dark d-inline-block" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+  <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
       <img src="images/4811.jpg" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title red" id="nombreProd1"> Producto: ${item.nombre}</h5>
@@ -133,11 +196,11 @@ return carrito}
 })}
 
 function Pokeinventario(){
-  lista.innerHTML="";
+  lista.innerHTML="";carrusel.innerHTML="";
   Pokemones.forEach((poke)=>{
   let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
   div.innerHTML= `
-  <div class="card bg-dark d-inline-block" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+  <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
       <img src="${poke.img}">
       <div class="card-body">
         <h5 class="card-title red" id="nombreProd1"> Producto: ${poke.nombre}</h5>
@@ -186,11 +249,11 @@ function carritoVaciar(){
   }}
 
 function carritoVer(){
- if (carrito.length>0){lista.innerHTML="";
+ if (carrito.length>0){lista.innerHTML="";carrusel.innerHTML="";
  carrito.forEach((item)=>{
  let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
  div.innerHTML= `
-   <div class="card bg-dark d-inline-block" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+   <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
        <img src="images/4811.jpg" class="card-img-top" alt="...">
        <div class="card-body">
          <h5 class="card-title red" id="nombreProd1"> Producto: ${item.nombre}</h5>
@@ -205,13 +268,13 @@ function carritoVer(){
   }
 // mostrar el carrito guardado, no está funcionando
 else if(carrito.length<=0 && localStorage.length>0){
-  lista.innerHTML="";
+  lista.innerHTML="";carrusel.innerHTML="";
   carrito= JSON.parse(localStorage.getItem("carritoVerificado"));
 console.log(typeof carrito);
 carrito.forEach((item)=>{
  let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
  div.innerHTML= `
-   <div class="card bg-dark d-inline-block" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+   <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
        <img src="images/4811.jpg" class="card-img-top" alt="...">
        <div class="card-body">
          <h5 class="card-title red" id="nombreProd1"> Producto: ${JSON.stringify(item.nombre)}</h5>
@@ -248,25 +311,55 @@ return carrito}
 
 // limpiar la pantalla
 let limpieza = document.getElementById("clear");
-limpieza.onclick = () => {lista.innerHTML=""}
+limpieza.onclick = () => {lista.innerHTML="";carrusel.innerHTML="";}
 let productosCash = "";
 
+let preciofinalStorage = [];let preciofinal =0
 
 //verificar el carrito = guardarlo en storage baby
 function carritoVerificado () {
   localStorage.setItem("carritoVerificado",JSON.stringify(carrito));
-  location.reload();
+ preciofinalStorage = localStorage.getItem("carritoVerificado");Toastify({
+  text: "Tu carrito fue guardado, ya podés pagar",
+  duration: 3000,
+  gravity: "bottom", // `top` or `bottom`
+  position: "center", // `left`, `center` or `right`
+  style: {
+    background: "green",padding:"50px"
+  },
+}).showToast();
 
 }
-let preciofinalStorage = [];
- preciofinalStorage = localStorage.getItem("carritoVerificado")
-let preciofinal =0
-console.log(JSON.parse(preciofinalStorage));
-console.log(preciofinalStorage.length);
+
+
+
 
 // mostrar productos del carrito verificado y precio final
 function pagar(){
-if (JSON.parse(preciofinalStorage).length>0){lista.innerHTML="";
+if (JSON.parse(preciofinalStorage).length>0 && dcto){lista.innerHTML="";carrusel.innerHTML="";
+JSON.parse(preciofinalStorage).forEach((item)=>{
+ preciofinal = preciofinal + parseInt(item.precio);
+ productosCash =  productosCash + item.nombre +" | ";
+})
+preciofinal= preciofinal - ((preciofinal*10)/100);
+//la tarjeta con el precio total
+   let div = document.createElement('div');
+   div.innerHTML= `
+     <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+         <img src="images/about.png" class="card-img-top" alt="...">
+         <div class="card-body">
+         <h5 class="card-title red" id="nombreProd1"> Productos: ${productosCash}</h5>
+
+           <h5 class="card-title red" id="nombreProd1"> Precio final: ${preciofinal}</h5>
+         
+           <button class="btn btn-tertiary" onclick="Cashout()">Pagar</button>
+         </div>
+      </div> 
+   `
+   lista.append(div);
+
+  }
+ else if (JSON.parse(preciofinalStorage).length>0 && !dcto){lista.innerHTML="";carrusel.innerHTML="";
 JSON.parse(preciofinalStorage).forEach((item)=>{
  
  preciofinal = preciofinal + parseInt(item.precio);
@@ -276,7 +369,7 @@ JSON.parse(preciofinalStorage).forEach((item)=>{
 //la tarjeta con el precio total
    let div = document.createElement('div');
    div.innerHTML= `
-     <div class="card bg-dark d-inline-block" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+     <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
          <img src="images/about.png" class="card-img-top" alt="...">
          <div class="card-body">
          <h5 class="card-title red" id="nombreProd1"> Productos: ${productosCash}</h5>
@@ -302,7 +395,7 @@ function Cashout(){
   Swal.fire({
     title: 'GRACIAS POR TU POKECOMPRA',
     text: `Estás llevando ${productosCash} por $ ${preciofinal}`,
-    icon: 'sucess',
+    icon: 'success',
     showCancelButton: true,
     confirmButtonColor: '#63c132',
     cancelButtonColor: '#d33',
@@ -313,7 +406,11 @@ function Cashout(){
         'LISTO',
         'Tu compra fue registrada',
         'success'
-      )
+      );
+      carrito=[]
+      carritoVerificado=[];
+        localStorage.clear();
+        location.reload()
     }
   })
 }
@@ -324,12 +421,12 @@ document.getElementById('kokemon').addEventListener("click", api)
 
 function api(el){
   let name = document.getElementById('searchPoke').value;
-  lista.innerHTML="";
+  lista.innerHTML="";carrusel.innerHTML="";
   fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
    .then(response => response.json()).then(data => {
   let poke = document.createElement('div');
         poke.innerHTML= `
-          <div class="card bg-dark d-inline-block" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+          <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
               <img src="${data.sprites.other["official-artwork"].front_default}" class="card-img-top" alt="...">
               <div class="card-body">
                 <h5 class="card-title red" id="poke"> Pokemon: ${JSON.stringify(data.name)}</h5>
@@ -354,3 +451,25 @@ function api(el){
   }
  
  
+  setTimeout (()=>{
+    Swal.fire({
+      title: '¡Aprovechá nuestra promocion!',
+      text: "clickéa para acceder a un descuento de 10% porque somos re piolas",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: 'black',
+      confirmButtonText: 'Me interesa!'
+    }).then((result) => {
+      if (result.isConfirmed) {dcto=true; Toastify({
+        text: "Descuento de 10% guardado",
+        duration: 3000,
+        gravity: "bottom", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        style: {
+          background: "green",padding:"50px"
+        },
+      }).showToast();console.log(dcto)}
+      else{dcto=false;
+      console.log(dcto)}}
+  )},30000)
