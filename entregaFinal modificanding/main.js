@@ -56,6 +56,9 @@ localStorage.getItem("productos")?Productos=JSON.parse(localStorage.getItem("pro
 let Pokemones=[];
 localStorage.getItem("pokemones")?Pokemones=JSON.parse(localStorage.getItem("pokemones")):localStorage.setItem("pokemones",JSON.stringify(Pokemones));
 
+
+
+
 // carrusel
 let carrusel = document.getElementById("carrusel");
 let carrusel1 = document.getElementById("tarjeta1");
@@ -119,7 +122,8 @@ botont3.addEventListener('click',() =>comprar(Productos[divcar3prod].id));3
 let dcto = false;
 let carrito=[];
 const ProductosFinal =[];
-Productos.push(new Producto(1,"prueba",200));
+
+
 function comprar(id){
   let compra = Productos.find((item) => item.id===id);
   let aidi = document.getElementById(id).parentNode;
@@ -240,7 +244,7 @@ lista.append(div);
 let Pokeboton = document.getElementById(`${poke.id}`);
 Pokeboton.addEventListener('click',() => comprar(poke.id));
 
-//agregar al array de carrito provisorio el producto
+//agregar al array de carrito provisorio el pokemon
 function comprar(id){
   let compra = Pokemones.find((item) => item.id===id);
   carrito.push(compra);
@@ -264,7 +268,7 @@ return carrito}
 // vaciar carrito
 function carritoVaciar(){
   if(localStorage.length>0 || carrito.length>0){
-  localStorage.clear();;
+  localStorage.clear();
   Swal.fire({
     icon: 'error',
     title: 'Oops...',
@@ -436,15 +440,14 @@ function Cashout(){
     confirmButtonText: 'COMPRAR'
   }).then((result) => {
     result.isConfirmed? (Swal.fire('LISTO','Tu compra fue registrada','success'),carrito=[],carritoVerificado=[],localStorage.clear(),location.reload())
-    :Swal.fire({
+    :(Swal.fire({
       icon: 'error',
       title: 'Ok, aún no está listo',
       text: 'Mantendremos tus productos en el carrito',
       footer: '<button onclick="carritoVer()">Ver carrito</button>'
-    })
+    }),localStorage.clear())
   }
 )}
-
 
 
 document.getElementById('kokemon').addEventListener("click", api)
@@ -504,7 +507,7 @@ function api(el){
       }).showToast();console.log(dcto)}
       else{dcto=false;
       console.log(dcto)}}
-  )},30000);
+  )},60000);
 
 const audio = new Audio("https://www.fesliyanstudios.com/play-mp3/6253");
 const buttons = document.querySelectorAll("button");
@@ -519,3 +522,163 @@ buttons.forEach(button => {
 const quitarSound = new Audio("https://www.fesliyanstudios.com/play-mp3/7017");
 
 const pagoSound = new Audio("https://soundboardguy.com/wp-content/uploads/2022/06/ka-ching-1.mp3");
+
+let Usuarios = [{
+  id:0, user:"admin",pass:"admin",admin:true},
+{id:1,user:"yo", pass:"yo", admin:false}]
+
+
+JSON.parse(localStorage.getItem("Usuarios"))||localStorage.setItem("Usuarios", JSON.stringify(Usuarios));
+
+class Usuario{
+  constructor(id,user,pass,admin) {this.id = id,
+  this.user= user,
+  this.pass=pass,
+  this.admin=false
+  }
+}
+
+
+
+function login(){
+let user = document.getElementById("user").value;
+    let pass = document.getElementById("pass").value;
+
+let usuarios =JSON.parse(localStorage.getItem("Usuarios"));   
+let existe = usuarios.find((usuario) => usuario.user===user);
+
+    console.log(existe);console.log(typeof existe)
+    if(existe.user != user|| existe.pass != pass){
+        quitarSound.play();
+        Swal.fire('Oops, usuario o clave inccorrecto');}
+        else if (existe.admin==true){
+          $('#exampleModal').modal('hide');
+          Swal.fire({
+                title: 'Bienvenido!',
+                text: `Hola ${user}, te estábamos esperando. En la barra de ingresos podrás ingresar productos nuevos o borrarlos desde el catálogo`,
+                imageUrl: 'https://media.tenor.com/CA2mkL9q27QAAAAC/nurse-joy-pokemon.gif',
+                imageWidth: 400,
+                imageHeight: 200,
+                imageAlt: 'pokechica',
+             })
+
+          document.getElementById('eliminar').classList.remove('d-none');
+          document.getElementById('ingreso').classList.remove('d-none');
+          document.getElementById('logins').classList.add('d-none');
+          document.getElementById('logout').classList.remove('d-none');
+          localStorage.setItem("AdminLogeado", true);  
+
+        }
+          else if (existe.admin==false){
+            $('#exampleModal').modal('hide');
+            Swal.fire({
+                  title: 'Bienvenido!',
+                  text: `Hola ${user}, te estábamos esperando`,
+                  imageUrl: 'https://media.tenor.com/CA2mkL9q27QAAAAC/nurse-joy-pokemon.gif',
+                  imageWidth: 400,
+                  imageHeight: 200,
+                  imageAlt: 'pokechica',
+               });
+               document.getElementById('logins').classList.add('d-none');
+               document.getElementById('logout').classList.remove('d-none');
+              }
+        }
+    
+    
+function logout(){
+localStorage.removeItem("AdminLogeado"); 
+Toastify({
+  text: "Has cerrado tu sesión. ¡Hasta Pronto!",
+  duration: 3000,
+  gravity: "bottom", // `top` or ``
+  position: "center", // `left`, `center` or `right`
+  style: {
+    background: "red",color: "white",padding: "50px"
+  },
+  
+}).showToast();
+location.reload();
+}
+
+
+
+
+function eliminar(e){ 
+    lista.innerHTML="";
+    carrusel.innerHTML="";
+    let buscado = Productos.find(producto => producto.nombre === document.getElementById('borrarProducto').value);
+    console.log(buscado);
+    let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
+    div.innerHTML= `
+    <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+        <img src="icon/poke.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title red" id="nombreProd1"> Producto: ${buscado.nombre}</h5>
+          <h6 class="card-text" id="idProducto" type="number">id: ${buscado.id}</h6>
+          <h6 class="card-text" id="precio1" type="number" >$ ${buscado.precio}</h6>
+          <button id="${buscado.id}" class="btn btn-primary">Eliminar</button>
+        </div>
+     </div> 
+  `
+  lista.append(div);
+  let boton = document.getElementById(`${buscado.id}`);
+  boton.addEventListener('click',() => quitarProducto(buscado.id));
+    document.getElementById('borrarProducto').value="";
+  }
+
+function quitarProducto(id){
+  let quitar = Productos.find((item) => item.id===id);
+  Productos.splice(quitar,1);
+  localStorage.setItem("productos",JSON.stringify(Productos));
+  Toastify({
+    text: "producto quitado del inventario",
+    duration: 3000,
+    gravity: "bottom", // `top` or ``
+    position: "center", // `left`, `center` or `right`
+    style: {
+      background: "red",color: "white",padding: "50px"
+    },
+    
+  }).showToast();lista.innerHTML = "";
+  quitarSound.play();
+return Productos}
+
+
+addEventListener("DOMContentLoaded", () => {
+localStorage.getItem("AdminLogeado")?( document.getElementById('eliminar').classList.remove('d-none'),
+document.getElementById('ingreso').classList.remove('d-none'),
+document.getElementById('logins').classList.add('d-none'),
+document.getElementById('logout').classList.remove('d-none')):""
+});
+
+
+function newUser(){
+  let user = document.getElementById('user').value;
+  let pass = document.getElementById('pass').value;
+  if (user != Usuarios.find((user) => user.user===user)) {
+    Usuarios.push(new Usuario ((Usuarios.length)+1,user,pass,false));
+    localStorage.setItem("Usuarios", JSON.stringify(Usuarios));
+    Toastify({
+      text: "Usuario creado!",
+      duration: 3000,
+      gravity: "bottom", // `top` or ``
+      position: "center", // `left`, `center` or `right`
+      style: {
+        background: "green",color: "white",padding: "50px"
+      },
+      
+    }).showToast();
+  } else{
+    Toastify({
+      text: "Lo sentimos ya existe un usuario con ese nombre",
+      duration: 3000,
+      gravity: "bottom", // `top` or ``
+      position: "center", // `left`, `center` or `right`
+      style: {
+        background: "red",color: "white",padding: "50px"
+      },
+      
+    }).showToast();
+
+  }
+  }
