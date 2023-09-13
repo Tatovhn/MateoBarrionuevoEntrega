@@ -57,6 +57,7 @@ let Pokemones=[];
 localStorage.getItem("pokemones")?Pokemones=JSON.parse(localStorage.getItem("pokemones")):localStorage.setItem("pokemones",JSON.stringify(Pokemones));
 
 
+let filtros = document.getElementById("filtroPrecio");
 
 
 // carrusel
@@ -188,6 +189,7 @@ function inventario(){
   productosDelInventario=JSON.parse(localStorage.getItem("productos"));
   lista.innerHTML="";
   carrusel.innerHTML="";
+  filtros.innerHTML="";
   productosDelInventario.forEach((item)=>{
   let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
   div.innerHTML= `
@@ -226,7 +228,7 @@ return carrito}
 })}
 
 function Pokeinventario(){
-  lista.innerHTML="";carrusel.innerHTML="";
+  lista.innerHTML="";carrusel.innerHTML="";filtros.innerHTML="";
   Pokemones.forEach((poke)=>{
   let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
   div.innerHTML= `
@@ -285,7 +287,9 @@ function carritoVaciar(){
   }}
 
 function carritoVer(){
- if (carrito.length>0){lista.innerHTML="";carrusel.innerHTML="";
+  let carritoAlmacenao = JSON.parse(localStorage.getItem("carritoVerificado"));
+
+ if (carrito.length>0){lista.innerHTML="";carrusel.innerHTML="";filtros.innerHTML="";
  carrito.forEach((item)=>{
  let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
  div.innerHTML= `
@@ -303,11 +307,11 @@ function carritoVer(){
    })
   }
 // mostrar el carrito guardado, no está funcionando
-else if(carrito.length=0 && localStorage.length>0){
-  lista.innerHTML="";carrusel.innerHTML="";
-  carrito= JSON.parse(localStorage.getItem("carritoVerificado"));
-console.log(typeof carrito);
-carrito.forEach((item)=>{
+else if((carritoAlmacenao) && carritoAlmacenao.length>0){
+  lista.innerHTML="";carrusel.innerHTML="";filtros.innerHTML="";
+  
+console.log(typeof carritoAlmacenao);
+carritoAlmacenao.forEach((item)=>{
  let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
  div.innerHTML= `
    <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
@@ -373,7 +377,7 @@ function carritoVerificado () {
 
 // mostrar productos del carrito verificado y precio final
 function pagar(){
-if (carrito.length>0 && dcto){lista.innerHTML="";carrusel.innerHTML="";
+if (carrito.length>0 && dcto ){lista.innerHTML="";carrusel.innerHTML="";
 carrito.forEach((item)=>{
  preciofinal = preciofinal + parseInt(item.precio);
  productosCash =  productosCash + item.nombre +" | ";
@@ -396,7 +400,7 @@ preciofinal= preciofinal - ((preciofinal*10)/100);
    lista.append(div);
 
   }
- else if ((carrito.length>0 && !dcto) || carrito.length<=0 && localStorage.length>0){lista.innerHTML="";carrusel.innerHTML="";
+ else if ((carrito.length>0 && !dcto) || carrito.length<=0 && localStorage.length>0){lista.innerHTML="";carrusel.innerHTML="";filtros.innerHTML="";
 JSON.parse(localStorage.getItem("carritoVerificado")).forEach((item)=>{
  
  preciofinal = preciofinal + parseInt(item.precio);
@@ -439,13 +443,13 @@ function Cashout(){
     cancelButtonColor: '#d33',
     confirmButtonText: 'COMPRAR'
   }).then((result) => {
-    result.isConfirmed? (Swal.fire('LISTO','Tu compra fue registrada','success'),carrito=[],carritoVerificado=[],localStorage.clear(),location.reload())
+    result.isConfirmed && localStorage.getItem("UserLogeado")? (Swal.fire('LISTO','Tu compra fue registrada','success'),carrito=[],carritoVerificado=[],localStorage.clear())
     :(Swal.fire({
       icon: 'error',
-      title: 'Ok, aún no está listo',
+      title: 'Ok, aún no está listo o no te has logueado',
       text: 'Mantendremos tus productos en el carrito',
       footer: '<button onclick="carritoVer()">Ver carrito</button>'
-    }),localStorage.clear())
+    }),preciofinal=0)
   }
 )}
 
@@ -454,7 +458,7 @@ document.getElementById('kokemon').addEventListener("click", api)
 
 function api(el){
   let name = document.getElementById('searchPoke').value;
-  lista.innerHTML="";carrusel.innerHTML="";
+  lista.innerHTML="";carrusel.innerHTML="";filtros.innerHTML="";
   fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
    .then(response => response.json()).
    then(data => {
@@ -546,8 +550,6 @@ let user = document.getElementById("user").value;
 
 let usuarios =JSON.parse(localStorage.getItem("Usuarios"));   
 let existe = usuarios.find((usuario) => usuario.user===user);
-
-    console.log(existe);console.log(typeof existe)
     if(existe.user != user|| existe.pass != pass){
         quitarSound.play();
         Swal.fire('Oops, usuario o clave inccorrecto');}
@@ -579,6 +581,7 @@ let existe = usuarios.find((usuario) => usuario.user===user);
                   imageHeight: 200,
                   imageAlt: 'pokechica',
                });
+               localStorage.setItem("UserLogeado", true);  
                document.getElementById('logins').classList.add('d-none');
                document.getElementById('logout').classList.remove('d-none');
               }
@@ -645,10 +648,15 @@ return Productos}
 
 
 addEventListener("DOMContentLoaded", () => {
-localStorage.getItem("AdminLogeado")?( document.getElementById('eliminar').classList.remove('d-none'),
+//si está logueado el admin
+if(localStorage.getItem("AdminLogeado")){
+document.getElementById('eliminar').classList.remove('d-none'),
 document.getElementById('ingreso').classList.remove('d-none'),
 document.getElementById('logins').classList.add('d-none'),
-document.getElementById('logout').classList.remove('d-none')):""
+document.getElementById('logout').classList.remove('d-none')}
+//si está logueado un usuario común
+// localStorage.getItem("UserLogeado")?(document.getElementById('logins').classList.add('d-none'),
+// document.getElementById('logout').classList.remove('d-none')):"";
 });
 
 
@@ -659,9 +667,9 @@ function newUser(){
     Usuarios.push(new Usuario ((Usuarios.length)+1,user,pass,false));
     localStorage.setItem("Usuarios", JSON.stringify(Usuarios));
     Toastify({
-      text: "Usuario creado!",
+      text: "Usuario creado! Ahora hacé clic en loguin para comenzar",
       duration: 3000,
-      gravity: "bottom", // `top` or ``
+      gravity: "top", // `top` or ``
       position: "center", // `left`, `center` or `right`
       style: {
         background: "green",color: "white",padding: "50px"
@@ -682,3 +690,143 @@ function newUser(){
 
   }
   }
+
+  const filtroPrecioAsc = document.getElementById('PrecioAsc');
+  const filtroPrecioDesc = document.getElementById('PrecioDesc');
+
+
+  filtroPrecioDesc.addEventListener('click', ()=>{carrusel.innerHTML ="";lista.innerHTML ="";
+    let productoss;
+    let productosDelInventario=JSON.parse(localStorage.getItem("productos"));
+    productoss = productosDelInventario.sort((a,b)=>a.precio - b.precio); 
+    carrusel.classList.remove('d-inline');
+    carrusel.innerHTML = `<a class="navbar-brand" style="width:10%;height: 10%;" href="index.html"><button class="btn btn-warning">Volver</button></a>
+    <br><br>  <h1 class="text-warning mx-auto"> Nuestros productos ordenados de Menor a Mayor Precio </h1>`
+   
+    let filtro= document.getElementById('filtroPrecio'); filtro.innerHTML="";
+    productoss.forEach((item)=>{
+  let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
+  div.innerHTML= `
+  <div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+      <img src="icon/poke.png" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title red" id="nombreProd1"> Producto: ${item.nombre}</h5>
+        <h6 class="card-text" id="idProducto" type="number">id: ${item.id}</h6>
+        <h6 class="card-text" id="precio1" type="number" >$ ${item.precio}</h6>
+        <button id="${item.id}" class="btn btn-primary">Agregar</button>
+      </div>
+   </div> 
+`
+lista.append(div);
+let boton = document.getElementById(`${item.id}`);
+boton.addEventListener('click',() => comprar(item.id));
+
+
+  });
+})
+
+
+filtroPrecioAsc.addEventListener('click', ()=>{
+ 
+  carrusel.innerHTML ="";lista.innerHTML ="";
+  let productoss;
+  let productosDelInventario=JSON.parse(localStorage.getItem("productos"));
+  productoss = productosDelInventario.sort((a,b)=>b.precio - a.precio); 
+  carrusel.classList.remove('d-inline');
+  carrusel.innerHTML = `<a class="navbar-brand" style="width:10%;height: 10%;" href="index.html"><button class="btn btn-warning">Volver</button></a>
+  <br><br>  
+  <h1 class="text-warning mx-auto"> Nuestros productos ordenados de Mayor a Menor Precio </h1>
+  `
+  let filtro= document.getElementById('filtroPrecio'); filtro.innerHTML="";
+  productoss.forEach((item)=>{
+let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
+div.innerHTML= `
+<div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+    <img src="icon/poke.png" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title red" id="nombreProd1"> Producto: ${item.nombre}</h5>
+      <h6 class="card-text" id="idProducto" type="number">id: ${item.id}</h6>
+      <h6 class="card-text" id="precio1" type="number" >$ ${item.precio}</h6>
+      <button id="${item.id}" class="btn btn-primary">Agregar</button>
+    </div>
+ </div> 
+`
+lista.append(div);
+let boton = document.getElementById(`${item.id}`);
+boton.addEventListener('click',() => comprar(item.id));
+
+});
+})
+
+
+const filtroNombreAsc = document.getElementById('NombreAsc');
+  const filtroNombreDesc = document.getElementById('NombreDesc');
+
+
+filtroNombreAsc.addEventListener('click',() =>{
+  let productoss;
+  let productosDelInventario=JSON.parse(localStorage.getItem("productos"));
+  productoss = productosDelInventario.sort((a,b)=>{
+if (a.nombre.toLowerCase()>b.nombre.toLowerCase()){return 1}
+else if (a.nombre.toLowerCase()<b.nombre.toLowerCase()){return -1}
+else {return 0}})
+
+carrusel.classList.remove('d-inline');
+  carrusel.innerHTML = `
+  <a class="navbar-brand" style="width:10%;height: 10%;" href="index.html"><button class="btn btn-warning">Volver</button></a>
+  <br><br>  <h1 class="text-warning mx-auto"> Nuestros productos ordenados alfabéticamente</h1>
+  `
+  let filtro= document.getElementById('filtroPrecio'); filtro.innerHTML="";
+  productoss.forEach((item)=>{
+let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
+div.innerHTML= `
+<div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+    <img src="icon/poke.png" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title red" id="nombreProd1"> Producto: ${item.nombre}</h5>
+      <h6 class="card-text" id="idProducto" type="number">id: ${item.id}</h6>
+      <h6 class="card-text" id="precio1" type="number" >$ ${item.precio}</h6>
+      <button id="${item.id}" class="btn btn-primary">Agregar</button>
+    </div>
+ </div> 
+`
+lista.append(div);
+let boton = document.getElementById(`${item.id}`);
+boton.addEventListener('click',() => comprar(item.id));
+  })
+})
+
+
+
+filtroNombreDesc.addEventListener('click',() =>{
+  let productoss;
+  let productosDelInventario=JSON.parse(localStorage.getItem("productos"));
+  productoss = productosDelInventario.sort((a,b)=>{
+if (b.nombre.toLowerCase()>a.nombre.toLowerCase()){return 1}
+else if (b.nombre.toLowerCase()<a.nombre.toLowerCase()){return -1}
+else {return 0}})
+
+carrusel.classList.remove('d-inline');
+  carrusel.innerHTML = `<a class="navbar-brand" style="width:10%;height: 10%;" href="index.html"><button class="btn btn-warning">Volver</button></a>
+  <br><br>  
+  <h1 class="text-warning mx-auto"> Nuestros productos ordenados alfabéticamente</h1>
+  `
+  let filtro= document.getElementById('filtroPrecio'); filtro.innerHTML="";
+  productoss.forEach((item)=>{
+let div = document.createElement('div');div.classList.add('d-inline-block');div.classList.add('mx-2');div.classList.add('m-t--1');
+div.innerHTML= `
+<div class="card bg-dark d-inline-block border border-warning" style="width: 18rem;text-align: center;margin-left :5%;margin-top :5%;" id="tarj">
+    <img src="icon/poke.png" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title red" id="nombreProd1"> Producto: ${item.nombre}</h5>
+      <h6 class="card-text" id="idProducto" type="number">id: ${item.id}</h6>
+      <h6 class="card-text" id="precio1" type="number" >$ ${item.precio}</h6>
+      <button id="${item.id}" class="btn btn-primary">Agregar</button>
+    </div>
+ </div> 
+`
+lista.append(div);
+let boton = document.getElementById(`${item.id}`);
+boton.addEventListener('click',() => comprar(item.id));
+  })
+})
